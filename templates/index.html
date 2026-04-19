@@ -695,7 +695,7 @@ position: fixed;
             }
 
             /* Permissions filter row: stack on mobile */
-            #permissions-tab > div[style*="display:flex"] {
+            .permissions-filter-row {
                 flex-direction: column;
             }
         }
@@ -848,7 +848,7 @@ position: fixed;
         <!-- Admin: Permissions Tab -->
         <!-- Admin: Permisos Tab -->
         <div id="permissions-tab" class="tab-content">
-            <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+            <div class="permissions-filter-row" style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
                 <div class="form-group" style="flex:1; min-width:200px;">
                     <label>Seleccionar Carpeta</label>
                     <select id="permShareSelect" onchange="loadPermissions()">
