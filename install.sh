@@ -26,7 +26,7 @@ apt update
 
 # Install required packages
 echo "📦 Installing required packages..."
-apt install -y python3 python3-pip python3-venv samba samba-common-bin nmbd wsdd2
+apt install -y python3 python3-pip python3-venv samba samba-common-bin wsdd2
 
 # Copy project files to install directory
 echo "📁 Copying files to ${INSTALL_DIR}..."
@@ -86,9 +86,16 @@ echo "🚀 Starting services..."
 systemctl start samba-manager
 systemctl enable samba-manager
 
-echo "🗂️  Starting Samba (smbd + nmbd)..."
-systemctl start smbd nmbd
-systemctl enable smbd nmbd
+echo "🗂️  Starting Samba (smbd)..."
+systemctl start smbd
+systemctl enable smbd
+
+# nmbd is deprecated/removed in Samba 4.18+ (Debian 13+); start only if available
+if systemctl list-unit-files nmbd.service &>/dev/null; then
+    echo "🗂️  Starting nmbd (NetBIOS name service)..."
+    systemctl start nmbd
+    systemctl enable nmbd
+fi
 
 echo "🔍 Starting wsdd2 (Windows network discovery)..."
 systemctl start wsdd2
