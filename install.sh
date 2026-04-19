@@ -1,53 +1,74 @@
 #!/bin/bash
 
-# Samba Web Manager Kurulum Scripti
+# Samba Web Manager Installation Script
 # MIT License
 
 set -e
 
 echo "=================================="
-echo "Samba Web Manager Kurulum"
+echo "Samba Web Manager Installation"
 echo "=================================="
 echo ""
 
-# Root kontrolü
+# Root check
 if [ "$EUID" -ne 0 ]; then 
-    echo "❌ Bu scripti root olarak çalıştırmalısınız (sudo ./install.sh)"
+    echo "❌ This script must be run as root (sudo ./install.sh)"
     exit 1
 fi
 
-# Sistem güncellemesi
-echo "📦 Sistem güncelleniyor..."
+# Determine source directory (where this script lives)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_DIR="/opt/samba-manager"
+
+# System update
+echo "📦 Updating system..."
 apt update
 
-# Gerekli paketleri yükle
-echo "📦 Gerekli paketler yükleniyor..."
-apt install -y python3 python3-pip python3-venv samba samba-common-bin
+# Install required packages
+echo "📦 Installing required packages..."
+apt install -y python3 python3-pip python3-venv samba samba-common-bin nmbd wsdd
 
-# Python sanal ortamı oluştur
-echo "🐍 Python sanal ortamı oluşturuluyor..."
+# Copy project files to install directory
+echo "📁 Copying files to ${INSTALL_DIR}..."
+mkdir -p "${INSTALL_DIR}"
+cp -r "${SCRIPT_DIR}/." "${INSTALL_DIR}/"
+
+cd "${INSTALL_DIR}"
+
+# Python virtual environment
+echo "🐍 Creating Python virtual environment..."
 python3 -m venv venv
 
-# Paketleri yükle
-echo "📦 Python paketleri yükleniyor..."
+# Install Python packages
+echo "📦 Installing Python packages..."
 ./venv/bin/pip install --upgrade pip
-./venv/bin/pip install flask werkzeug
+./venv/bin/pip install flask werkzeug flask-limiter
 
-# Data klasörü oluştur
-echo "📁 Data klasörü oluşturuluyor..."
-mkdir -p data
+# Generate SECRET_KEY and write config
+echo "🔑 Generating SECRET_KEY..."
+mkdir -p /etc/samba-manager
+SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+cat > /etc/samba-manager/config.env << EOFENV
+SECRET_KEY="${SECRET_KEY}"
+EOFENV
+chmod 600 /etc/samba-manager/config.env
 
-# Systemd servisi oluştur
-echo "⚙️  Systemd servisi oluşturuluyor..."
+# Data directory
+echo "📁 Creating data directory..."
+mkdir -p "${INSTALL_DIR}/data"
+
+# Systemd service
+echo "⚙️  Creating systemd service..."
 cat > /etc/systemd/system/samba-manager.service << 'EOFSERVICE'
 [Unit]
 Description=Samba Web Manager
-After=network.target
+After=network.target smbd.service
 
 [Service]
 Type=simple
 User=root
 WorkingDirectory=/opt/samba-manager
+EnvironmentFile=/etc/samba-manager/config.env
 Environment="PATH=/opt/samba-manager/venv/bin"
 ExecStart=/opt/samba-manager/venv/bin/python /opt/samba-manager/app.py
 Restart=always
@@ -57,27 +78,31 @@ RestartSec=10
 WantedBy=multi-user.target
 EOFSERVICE
 
-# Systemd'yi yeniden yükle
+# Reload systemd
 systemctl daemon-reload
 
-# Servisi başlat ve etkinleştir
-echo "🚀 Servis başlatılıyor..."
+# Start and enable services
+echo "🚀 Starting services..."
 systemctl start samba-manager
 systemctl enable samba-manager
 
-# Samba'yı başlat
-echo "🗂️  Samba başlatılıyor..."
-systemctl start smbd
-systemctl enable smbd
+echo "🗂️  Starting Samba (smbd + nmbd)..."
+systemctl start smbd nmbd
+systemctl enable smbd nmbd
 
-# Sudoers yapılandırması
-echo "🔐 Sudo izinleri yapılandırılıyor..."
+echo "🔍 Starting wsdd (Windows network discovery)..."
+systemctl start wsdd
+systemctl enable wsdd
+
+# Sudoers configuration
+echo "🔐 Configuring sudo permissions..."
 if ! grep -q "samba-manager" /etc/sudoers; then
     cat >> /etc/sudoers << 'EOFSUDOERS'
 
 # Samba Web Manager
 root ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart smbd
 root ALL=(ALL) NOPASSWD: /usr/bin/systemctl status smbd
+root ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart wsdd
 root ALL=(ALL) NOPASSWD: /usr/bin/smbpasswd
 root ALL=(ALL) NOPASSWD: /usr/sbin/useradd
 root ALL=(ALL) NOPASSWD: /usr/sbin/userdel
@@ -88,28 +113,28 @@ root ALL=(ALL) NOPASSWD: /usr/bin/tee /etc/samba/smb.conf
 EOFSUDOERS
 fi
 
-# IP adresini al
+# Get IP address
 IP=$(hostname -I | awk '{print $1}')
 
 echo ""
 echo "=================================="
-echo "✅ Kurulum Tamamlandı!"
+echo "✅ Installation Complete!"
 echo "=================================="
 echo ""
-echo "🌐 Web Paneli: http://$IP:5000"
+echo "🌐 Web Panel: http://$IP:5000"
 echo ""
-echo "🔐 Varsayılan Giriş:"
-echo "   Kullanıcı: admin"
-echo "   Şifre: admin123"
+echo "🔐 Default Login:"
+echo "   Username: admin"
+echo "   Password: admin123"
 echo ""
-echo "⚠️  İlk girişten sonra şifrenizi değiştirin!"
+echo "⚠️  Change the default password on your first login!"
 echo ""
-echo "📊 Servis Durumu:"
+echo "📊 Service Status:"
 systemctl status samba-manager --no-pager
 echo ""
-echo "🛠️  Yararlı Komutlar:"
-echo "   sudo systemctl status samba-manager  # Durum"
-echo "   sudo systemctl restart samba-manager # Yeniden başlat"
-echo "   sudo systemctl stop samba-manager    # Durdur"
-echo "   sudo journalctl -u samba-manager -f  # Logları izle"
+echo "🛠️  Useful Commands:"
+echo "   sudo systemctl status samba-manager   # Status"
+echo "   sudo systemctl restart samba-manager  # Restart"
+echo "   sudo systemctl stop samba-manager     # Stop"
+echo "   sudo journalctl -u samba-manager -f   # Follow logs"
 echo ""

