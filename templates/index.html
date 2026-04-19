@@ -11,12 +11,19 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+            max-width: 100%;
         }
 
         .header {
@@ -214,6 +221,8 @@
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         th {
@@ -609,6 +618,8 @@ position: fixed;
             .container {
                 margin: 15px auto;
                 padding: 0 10px;
+                width: 100%;
+                max-width: 100%;
             }
 
             .stats-grid {
@@ -622,6 +633,24 @@ position: fixed;
 
             .tab-content {
                 padding: 15px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 13px;
+            }
+
+            /* Stack action buttons vertically inside table cells */
+            td .btn + .btn {
+                margin-top: 4px;
+            }
+
+            td .btn {
+                display: block;
+                width: 100%;
+                text-align: center;
             }
 
             .modal-content {
@@ -664,6 +693,11 @@ position: fixed;
             .btn-small {
                 padding: 8px 12px;
             }
+
+            /* Permissions filter row: stack on mobile */
+            .permissions-filter-row {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
@@ -677,11 +711,16 @@ position: fixed;
             }
 
             .tab-content {
-                padding: 12px;
+                padding: 10px;
             }
 
             .stat-card .value {
                 font-size: 24px;
+            }
+
+            th, td {
+                padding: 6px 4px;
+                font-size: 12px;
             }
         }
 
@@ -809,7 +848,7 @@ position: fixed;
         <!-- Admin: Permissions Tab -->
         <!-- Admin: Permisos Tab -->
         <div id="permissions-tab" class="tab-content">
-            <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+            <div class="permissions-filter-row" style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
                 <div class="form-group" style="flex:1; min-width:200px;">
                     <label>Seleccionar Carpeta</label>
                     <select id="permShareSelect" onchange="loadPermissions()">
