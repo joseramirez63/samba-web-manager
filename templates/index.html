@@ -578,6 +578,112 @@ position: fixed;
             opacity: 1;
         }
 
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ── Responsive / Mobile ──────────────────────────────── */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: flex-end;
+                flex-wrap: wrap;
+            }
+
+            .user-info {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .container {
+                margin: 15px auto;
+                padding: 0 10px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab {
+                padding: 8px 14px;
+                font-size: 14px;
+            }
+
+            .tab-content {
+                padding: 15px;
+            }
+
+            .modal-content {
+                margin: 10px;
+                padding: 20px;
+                max-width: calc(100vw - 20px);
+            }
+
+            .modal-content.large {
+                max-width: calc(100vw - 20px);
+            }
+
+            .alert {
+                min-width: auto;
+                width: 90%;
+                left: 5%;
+                transform: none;
+                font-size: 13px;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .file-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .profile-section {
+                max-width: 100%;
+            }
+
+            .editor-toolbar {
+                flex-wrap: wrap;
+            }
+
+            .btn-small {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 16px;
+            }
+
+            .tab {
+                padding: 7px 10px;
+                font-size: 13px;
+            }
+
+            .tab-content {
+                padding: 12px;
+            }
+
+            .stat-card .value {
+                font-size: 24px;
+            }
+        }
 
     </style>
 </head>
@@ -667,33 +773,37 @@ position: fixed;
                 <button class="info-banner-close" onclick="document.getElementById('userWorkflowBanner').style.display='none'" title="Cerrar">&times;</button>
             </div>
             <button class="btn" onclick="openModal('userModal')">+ Nuevo Usuario</button>
-            <table id="usersTable">
-                <thead>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Administrador</th>
-                        <th>Fecha de Creación</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Administrador</th>
+                            <th>Fecha de Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Admin: Shares Tab -->
         <div id="shares-tab" class="tab-content">
             <button class="btn" onclick="openModal('shareModal')">+ Nueva Carpeta Compartida</button>
-            <table id="sharesTable">
-                <thead>
-                    <tr>
-                        <th>Nombre del Recurso Compartido</th>
-                        <th>Ruta Interna del Recurso</th>
-                        <th>Fecha de Creación</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="sharesTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Recurso Compartido</th>
+                            <th>Ruta Interna del Recurso</th>
+                            <th>Fecha de Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Admin: Permissions Tab -->
@@ -727,15 +837,17 @@ position: fixed;
 
             <!-- Per-share permission list -->
             <h3 style="margin-bottom:10px;">Permisos de la carpeta seleccionada</h3>
-            <table id="permissionsTable" style="margin-bottom: 40px;">
-                <thead>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Permiso</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="permissionsTable" style="margin-bottom: 40px;">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Permiso</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
             <!-- Permission matrix (all users × all shares) -->
             <h3 style="margin-bottom:10px;">Matriz de Permisos (Usuarios × Carpetas)</h3>
