@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş - Samba Yönetici</title>
+    <title>Iniciar Sesión - Samba Manager</title>
     <style>
         * {
             margin: 0;
@@ -99,36 +99,79 @@
             margin-bottom: 20px;
             display: none;
         }
+
+        .warning-banner {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h1>🔐 Samba Yönetici</h1>
+        <h1>🔐 Samba Manager</h1>
         
-        <div id="error" class="error"></div>
-        <div id="success" class="success"></div>
-        
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Kullanıcı Adı</label>
-                <input type="text" id="username" name="username" required autofocus>
-            </div>
+        <!-- Login form -->
+        <div id="loginSection">
+            <div id="error" class="error"></div>
+            <div id="success" class="success"></div>
             
-            <div class="form-group">
-                <label for="password">Şifre</label>
-                <input type="password" id="password" name="password" required>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" required autofocus autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+        </div>
+
+        <!-- Force password change section (shown after first login) -->
+        <div id="changePasswordSection" style="display:none;">
+            <div class="warning-banner">
+                ⚠️ Por seguridad, debes cambiar la contraseña predeterminada antes de continuar.
             </div>
-            
-            <button type="submit">Giriş Yap</button>
-        </form>
+            <div id="changeError" class="error"></div>
+            <div id="changeSuccess" class="success"></div>
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="newPassword">Nueva Contraseña</label>
+                    <input type="password" id="newPassword" required autocomplete="new-password">
+                    <div class="help-text">Mínimo 8 caracteres</div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirmar Nueva Contraseña</label>
+                    <input type="password" id="confirmNewPassword" required autocomplete="new-password">
+                </div>
+                <button type="submit">Cambiar Contraseña y Continuar</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        const form = document.getElementById('loginForm');
+        const loginForm = document.getElementById('loginForm');
+        const changePasswordForm = document.getElementById('changePasswordForm');
         const errorDiv = document.getElementById('error');
         const successDiv = document.getElementById('success');
+        const changeErrorDiv = document.getElementById('changeError');
+        const changeSuccessDiv = document.getElementById('changeSuccess');
 
-        form.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             errorDiv.style.display = 'none';
@@ -140,27 +183,67 @@
             try {
                 const response = await fetch('/api/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
                 
                 const data = await response.json();
                 
                 if (response.ok) {
-                    successDiv.textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
-                    successDiv.style.display = 'block';
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1000);
+                    if (data.force_password_change) {
+                        // Show password change section
+                        document.getElementById('loginSection').style.display = 'none';
+                        document.getElementById('changePasswordSection').style.display = 'block';
+                    } else {
+                        successDiv.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
+                        successDiv.style.display = 'block';
+                        setTimeout(() => { window.location.href = '/'; }, 800);
+                    }
                 } else {
-                    errorDiv.textContent = data.error || 'Giriş başarısız';
+                    errorDiv.textContent = data.error || 'Inicio de sesión fallido';
                     errorDiv.style.display = 'block';
                 }
-            } catch (error) {
-                errorDiv.textContent = 'Bağlantı hatası: ' + error.message;
+            } catch (err) {
+                errorDiv.textContent = 'Error de conexión: ' + err.message;
                 errorDiv.style.display = 'block';
+            }
+        });
+
+        changePasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            changeErrorDiv.style.display = 'none';
+            changeSuccessDiv.style.display = 'none';
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+            if (newPassword !== confirmNewPassword) {
+                changeErrorDiv.textContent = 'Las contraseñas no coinciden';
+                changeErrorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/force-change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_password: newPassword })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    changeSuccessDiv.textContent = 'Contraseña actualizada. Redirigiendo...';
+                    changeSuccessDiv.style.display = 'block';
+                    setTimeout(() => { window.location.href = '/'; }, 800);
+                } else {
+                    changeErrorDiv.textContent = data.error || 'Error al cambiar la contraseña';
+                    changeErrorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                changeErrorDiv.textContent = 'Error de conexión: ' + err.message;
+                changeErrorDiv.style.display = 'block';
             }
         });
     </script>

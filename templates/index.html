@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samba Yönetici</title>
+    <title>Samba Manager</title>
     <style>
         * {
             margin: 0;
@@ -546,13 +546,13 @@ position: fixed;
 <body>
     <div class="header">
         <div class="header-content">
-            <h1>🗂️ Samba Yönetici Paneli</h1>
+            <h1>🗂️ Samba Manager - Panel de Administración</h1>
             <div class="header-right">
                 <div class="user-info">
                     <span id="currentUser"></span>
                     <span id="userRole"></span>
                 </div>
-                <button onclick="logout()">Çıkış</button>
+                <button onclick="logout()">Cerrar Sesión</button>
             </div>
         </div>
     </div>
@@ -568,33 +568,33 @@ position: fixed;
         <!-- Profil Tab -->
         <div id="profile-tab" class="tab-content">
             <div class="profile-section">
-                <h2>👤 Profil Ayarları</h2>
+                <h2>👤 Configuración de Perfil</h2>
                 <div class="form-group">
-                    <label>Kullanıcı Adı</label>
+                    <label>Nombre de Usuario</label>
                     <input type="text" id="profileUsername" disabled>
                 </div>
                 <div class="form-group">
-                    <label>Eski Şifre</label>
+                    <label>Contraseña Actual</label>
                     <input type="password" id="oldPassword">
                 </div>
                 <div class="form-group">
-                    <label>Yeni Şifre</label>
+                    <label>Nueva Contraseña</label>
                     <input type="password" id="newPassword">
                 </div>
                 <div class="form-group">
-                    <label>Yeni Şifre (Tekrar)</label>
+                    <label>Confirmar Nueva Contraseña</label>
                     <input type="password" id="confirmPassword">
                 </div>
-                <button class="btn" onclick="changePassword()">Şifre Değiştir</button>
+                <button class="btn" onclick="changePassword()">Cambiar Contraseña</button>
             </div>
         </div>
 
-        <!-- Dosyalarım Tab -->
+        <!-- My Files Tab -->
         <div id="myfiles-tab" class="tab-content">
             <div class="form-group">
-                <label>Paylaşım Seç</label>
+                <label>Seleccionar Carpeta</label>
                 <select id="myFileShareSelect" onchange="loadMyFiles()">
-                    <option value="">Paylaşım seçin...</option>
+                    <option value="">Seleccionar carpeta...</option>
                 </select>
             </div>
 
@@ -603,85 +603,98 @@ position: fixed;
                 
                 <div class="upload-area" onclick="document.getElementById('myFileInput').click()" id="myUploadArea">
                     <input type="file" id="myFileInput" onchange="uploadMyFile()">
-                    <p>📤 Dosya yüklemek için tıklayın</p>
+                    <p>📤 Haz clic para subir un archivo</p>
                 </div>
 
-                <button class="btn btn-success" onclick="openModal('myFolderModal')" style="margin-bottom: 10px;" id="myNewFolderBtn">+ Yeni Klasör</button>
+                <button class="btn btn-success" onclick="openModal('myFolderModal')" style="margin-bottom: 10px;" id="myNewFolderBtn">+ Nueva Carpeta</button>
 
                 <div class="file-list" id="myFileList"></div>
             </div>
         </div>
 
-        <!-- Admin: Kullanıcılar Tab -->
+        <!-- Admin: Users Tab -->
         <div id="users-tab" class="tab-content">
-            <button class="btn" onclick="openModal('userModal')">+ Yeni Kullanıcı</button>
+            <button class="btn" onclick="openModal('userModal')">+ Nuevo Usuario</button>
             <table id="usersTable">
                 <thead>
                     <tr>
-                        <th>Kullanıcı Adı</th>
-                        <th>Yönetici</th>
-                        <th>Oluşturma Tarihi</th>
-                        <th>İşlemler</th>
+                        <th>Usuario</th>
+                        <th>Administrador</th>
+                        <th>Fecha de Creación</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
 
-        <!-- Admin: Paylaşımlar Tab -->
+        <!-- Admin: Shares Tab -->
         <div id="shares-tab" class="tab-content">
-            <button class="btn" onclick="openModal('shareModal')">+ Yeni Paylaşım</button>
+            <button class="btn" onclick="openModal('shareModal')">+ Nueva Carpeta Compartida</button>
             <table id="sharesTable">
                 <thead>
                     <tr>
-                        <th>Paylaşım Adı</th>
-                        <th>Yol</th>
-                        <th>Oluşturma Tarihi</th>
-                        <th>İşlemler</th>
+                        <th>Nombre</th>
+                        <th>Ruta</th>
+                        <th>Fecha de Creación</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
 
-        <!-- Admin: İzinler Tab -->
+        <!-- Admin: Permissions Tab -->
+        <!-- Admin: Permisos Tab -->
         <div id="permissions-tab" class="tab-content">
-            <div class="form-group">
-                <label>Paylaşım Seç</label>
-                <select id="permShareSelect" onchange="loadPermissions()">
-                    <option value="">Paylaşım seçin...</option>
-                </select>
+            <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+                <div class="form-group" style="flex:1; min-width:200px;">
+                    <label>Seleccionar Carpeta</label>
+                    <select id="permShareSelect" onchange="loadPermissions()">
+                        <option value="">Seleccionar carpeta...</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1; min-width:200px;">
+                    <label>Seleccionar Usuario</label>
+                    <select id="permUserSelect">
+                        <option value="">Seleccionar usuario...</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1; min-width:150px;">
+                    <label>Permiso</label>
+                    <select id="permTypeSelect">
+                        <option value="read">Solo Lectura</option>
+                        <option value="write">Lectura/Escritura</option>
+                        <option value="none">Sin Acceso</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end;">
+                    <button class="btn" onclick="setPermission()">Aplicar Permiso</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Kullanıcı Seç</label>
-                <select id="permUserSelect">
-                    <option value="">Kullanıcı seçin...</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>İzin</label>
-                <select id="permTypeSelect">
-                    <option value="read">Okuma</option>
-                    <option value="write">Okuma/Yazma</option>
-                    <option value="none">İzin Yok</option>
-                </select>
-            </div>
-            <button class="btn" onclick="setPermission()">İzin Ayarla</button>
-            
-            <table id="permissionsTable" style="margin-top: 30px;">
+
+            <!-- Per-share permission list -->
+            <h3 style="margin-bottom:10px;">Permisos de la carpeta seleccionada</h3>
+            <table id="permissionsTable" style="margin-bottom: 40px;">
                 <thead>
                     <tr>
-                        <th>Kullanıcı</th>
-                        <th>İzin</th>
+                        <th>Usuario</th>
+                        <th>Permiso</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
+
+            <!-- Permission matrix (all users × all shares) -->
+            <h3 style="margin-bottom:10px;">Matriz de Permisos (Usuarios × Carpetas)</h3>
+            <div style="overflow-x:auto;">
+                <div id="permissionsMatrix"></div>
+            </div>
         </div>
 
         <!-- Admin: Loglar Tab -->
         <div id="logs-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px;">📋 Sistem Logları</h2>
+            <h2 style="margin-bottom: 20px;">📋 Registros del Sistema</h2>
             <div style="max-height: 600px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px;">
                 <div id="logsList"></div>
             </div>
@@ -692,132 +705,132 @@ position: fixed;
     <div class="footer">
         <div class="footer-content">
             <div class="footer-links">
-                <a href="https://github.com/yourusername/samba-web-manager" target="_blank">📦 GitHub</a>
-                <a href="#" onclick="showAbout(); return false;">ℹ️ Hakkında</a>
-                <a href="#" onclick="showHelp(); return false;">❓ Yardım</a>
+                <a href="https://github.com/joseramirez63/samba-web-manager" target="_blank">📦 GitHub</a>
+                <a href="#" onclick="showAbout(); return false;">ℹ️ Acerca de</a>
+                <a href="#" onclick="showHelp(); return false;">❓ Ayuda</a>
             </div>
             <div class="footer-info">
-                Samba Web Manager v{{ version }} | Developed by <strong>Monica AI Assistant</strong> | MIT License © 2025
+                Samba Web Manager v{{ version }} | MIT License © 2025 | <a href="https://github.com/joseramirez63/samba-web-manager" style="color:#aaa">GitHub</a>
             </div>
         </div>
     </div>
 
-    <!-- Kullanıcı Modal -->
+    <!-- New User Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Yeni Kullanıcı</h2>
+                <h2>Nuevo Usuario</h2>
                 <span class="close" onclick="closeModal('userModal')">&times;</span>
             </div>
             <div class="form-group">
-                <label>Kullanıcı Adı</label>
+                <label>Nombre de Usuario</label>
                 <input type="text" id="newUsername">
             </div>
             <div class="form-group">
-                <label>Şifre</label>
+                <label>Contraseña</label>
                 <input type="password" id="newUserPassword">
             </div>
             <div class="form-group checkbox-group">
                 <input type="checkbox" id="isAdmin">
-                <label>Yönetici</label>
+                <label>Administrador</label>
             </div>
-            <button class="btn" onclick="createUser()">Oluştur</button>
+            <button class="btn" onclick="createUser()">Crear</button>
         </div>
     </div>
 
-    <!-- Paylaşım Modal -->
+    <!-- New Share Modal -->
     <div id="shareModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Yeni Paylaşım</h2>
+                <h2>Nueva Carpeta Compartida</h2>
                 <span class="close" onclick="closeModal('shareModal')">&times;</span>
             </div>
             <div class="form-group">
-                <label>Paylaşım Adı</label>
-                <input type="text" id="newShareName" placeholder="ornek_paylasim">
-                <div class="help-text">⚠️ Sadece harf, rakam, tire (-) ve alt çizgi (_) kullanın. Boşluk kullanmayın!</div>
+                <label>Nombre</label>
+                <input type="text" id="newShareName" placeholder="nombre_carpeta">
+                <div class="help-text">⚠️ Solo letras, números, guiones (-) y guiones bajos (_). Sin espacios.</div>
             </div>
             <div class="form-group">
-                <label>Dizin Seç</label>
+                <label>Seleccionar Directorio</label>
                 <div class="directory-tree" id="directoryTree"></div>
-                <input type="text" id="newSharePath" readonly style="margin-top: 10px;" placeholder="Yukarıdan dizin seçin">
+                <input type="text" id="newSharePath" readonly style="margin-top: 10px;" placeholder="Selecciona un directorio arriba">
             </div>
-            <button class="btn" onclick="createShare()">Oluştur</button>
+            <button class="btn" onclick="createShare()">Crear</button>
         </div>
     </div>
 
-    <!-- Paylaşım Düzenle Modal -->
+    <!-- Edit Share Modal -->
     <div id="editShareModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Paylaşım Düzenle</h2>
+                <h2>Editar Carpeta Compartida</h2>
                 <span class="close" onclick="closeModal('editShareModal')">&times;</span>
             </div>
             <div class="form-group">
-                <label>Eski Ad</label>
+                <label>Nombre Actual</label>
                 <input type="text" id="editShareOldName" disabled>
             </div>
             <div class="form-group">
-                <label>Yeni Ad</label>
-                <input type="text" id="editShareNewName" placeholder="ornek_paylasim">
-                <div class="help-text">⚠️ Sadece harf, rakam, tire (-) ve alt çizgi (_) kullanın. Boşluk kullanmayın!</div>
+                <label>Nuevo Nombre</label>
+                <input type="text" id="editShareNewName" placeholder="nombre_carpeta">
+                <div class="help-text">⚠️ Solo letras, números, guiones (-) y guiones bajos (_). Sin espacios.</div>
             </div>
             <div class="form-group">
-                <label>Yol</label>
+                <label>Ruta</label>
                 <input type="text" id="editSharePath" disabled>
             </div>
-            <button class="btn" onclick="updateShare()">Güncelle</button>
+            <button class="btn" onclick="updateShare()">Actualizar</button>
         </div>
     </div>
 
-    <!-- Şifre Değiştir Modal (Admin) -->
+    <!-- Change Password Modal (Admin) -->
     <div id="changePasswordModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Kullanıcı Şifresi Değiştir</h2>
+                <h2>Cambiar Contraseña de Usuario</h2>
                 <span class="close" onclick="closeModal('changePasswordModal')">&times;</span>
             </div>
             <div class="form-group">
-                <label>Kullanıcı</label>
+                <label>Usuario</label>
                 <input type="text" id="changePasswordUsername" disabled>
             </div>
             <div class="form-group">
-                <label>Yeni Şifre</label>
+                <label>Nueva Contraseña</label>
                 <input type="password" id="changePasswordNew">
             </div>
             <div class="form-group">
-                <label>Yeni Şifre (Tekrar)</label>
+                <label>Confirmar Nueva Contraseña</label>
                 <input type="password" id="changePasswordConfirm">
             </div>
-            <button class="btn" onclick="changeUserPassword()">Şifre Değiştir</button>
+            <button class="btn" onclick="changeUserPassword()">Cambiar Contraseña</button>
         </div>
     </div>
 
-    <!-- Klasör Modal (Kullanıcı) -->
+    <!-- New Folder Modal -->
     <div id="myFolderModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Yeni Klasör</h2>
+                <h2>Nueva Carpeta</h2>
                 <span class="close" onclick="closeModal('myFolderModal')">&times;</span>
             </div>
             <div class="form-group">
-                <label>Klasör Adı</label>
+                <label>Nombre de Carpeta</label>
                 <input type="text" id="myNewFolderName">
             </div>
-            <button class="btn" onclick="createMyFolder()">Oluştur</button>
+            <button class="btn" onclick="createMyFolder()">Crear</button>
         </div>
     </div>
 
-    <!-- Dosya Düzenle Modal -->
+    <!-- Edit File Modal -->
     <div id="editFileModal" class="modal">
         <div class="modal-content large">
             <div class="modal-header">
-                <h2>📝 Dosya Düzenle: <span id="editFileName"></span></h2>
+                <h2>📝 Editar Archivo: <span id="editFileName"></span></h2>
                 <span class="close" onclick="closeModal('editFileModal')">&times;</span>
             </div>
             <div class="editor-toolbar">
-                <button class="btn btn-success btn-small" onclick="saveEditedFile()">💾 Kaydet</button>
-                <button class="btn btn-small" onclick="closeModal('editFileModal')">❌ İptal</button>
+                <button class="btn btn-success btn-small" onclick="saveEditedFile()">💾 Guardar</button>
+                <button class="btn btn-small" onclick="closeModal('editFileModal')">❌ Cancelar</button>
             </div>
             <div class="form-group">
                 <textarea id="fileContent" spellcheck="false"></textarea>
@@ -852,7 +865,7 @@ position: fixed;
                 isAdmin = data.is_admin;
                 
                 document.getElementById('currentUser').textContent = currentUser;
-                document.getElementById('userRole').textContent = isAdmin ? ' (Yönetici)' : '';
+                document.getElementById('userRole').textContent = isAdmin ? ' (Administrador)' : '';
             } catch (error) {
                 window.location.href = '/login';
             }
@@ -864,16 +877,16 @@ position: fixed;
             if (isAdmin) {
                 tabsContainer.innerHTML = `
                     <button class="tab active" onclick="switchTab('profile')">👤 Profil</button>
-                    <button class="tab" onclick="switchTab('myfiles')">📂 Dosyalarım</button>
-                    <button class="tab" onclick="switchTab('users')">👥 Kullanıcılar</button>
-                    <button class="tab" onclick="switchTab('shares')">📁 Paylaşımlar</button>
-                    <button class="tab" onclick="switchTab('permissions')">🔐 İzinler</button>
+                    <button class="tab" onclick="switchTab('myfiles')">📂 Mis Archivos</button>
+                    <button class="tab" onclick="switchTab('users')">👥 Usuarios</button>
+                    <button class="tab" onclick="switchTab('shares')">📁 Carpetas Compartidas</button>
+                    <button class="tab" onclick="switchTab('permissions')">🔐 Permisos</button>
                     <button class="tab" onclick="switchTab('logs')">📋 Loglar</button>
                 `;
             } else {
                 tabsContainer.innerHTML = `
                     <button class="tab active" onclick="switchTab('profile')">👤 Profil</button>
-                    <button class="tab" onclick="switchTab('myfiles')">📂 Dosyalarım</button>
+                    <button class="tab" onclick="switchTab('myfiles')">📂 Mis Archivos</button>
                 `;
                 document.getElementById('statsGrid').style.display = 'none';
             }
@@ -927,12 +940,12 @@ position: fixed;
             
             if (response.status === 401) {
                 window.location.href = '/login';
-                throw new Error('Oturum süresi doldu');
+                throw new Error('Sesión expirada');
             }
             
             const result = await response.json();
             
-            if (!response.ok) throw new Error(result.error || 'İşlem başarısız');
+            if (!response.ok) throw new Error(result.error || 'Operación fallida');
             return result;
         }
 
@@ -940,19 +953,24 @@ position: fixed;
             try {
                 const status = await apiCall('/api/status');
                 
-                let sambaStatus = status.samba === 'active' ? '✅ Aktif' : '❌ Pasif';
+                let sambaStatus = status.samba === 'active' ? '✅ Activo' : '❌ Inactivo';
+                let wsddStatus = status.wsdd === 'active' ? '✅ Activo' : '❌ Inactivo';
                 
                 let statsHTML = `
                     <div class="stat-card">
-                        <h3>Samba Durumu</h3>
+                        <h3>Estado de Samba</h3>
                         <div class="value">${sambaStatus}</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Toplam Kullanıcı</h3>
+                        <h3>Descubrimiento de Red (wsdd)</h3>
+                        <div class="value">${wsddStatus}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total de Usuarios</h3>
                         <div class="value">${status.users_count}</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Toplam Paylaşım</h3>
+                        <h3>Total de Carpetas</h3>
                         <div class="value">${status.shares_count}</div>
                     </div>
                 `;
@@ -978,7 +996,7 @@ position: fixed;
                 
                 document.getElementById('statsGrid').innerHTML = statsHTML;
             } catch (error) {
-                console.error('Durum yüklenemedi:', error);
+                console.error('Error al cargar el estado:', error);
             }
         }
 
@@ -993,12 +1011,12 @@ position: fixed;
                 const confirmPassword = document.getElementById('confirmPassword').value;
                 
                 if (!oldPassword || !newPassword || !confirmPassword) {
-                    showAlert('Tüm alanları doldurun', 'error');
+                    showAlert('Por favor completa todos los campos', 'error');
                     return;
                 }
                 
                 if (newPassword !== confirmPassword) {
-                    showAlert('Yeni şifreler eşleşmiyor', 'error');
+                    showAlert('Las nuevas contraseñas no coinciden', 'error');
                     return;
                 }
                 
@@ -1007,7 +1025,7 @@ position: fixed;
                     new_password: newPassword 
                 });
                 
-                showAlert('Şifre başarıyla değiştirildi');
+                showAlert('Contraseña cambiada exitosamente');
                 document.getElementById('oldPassword').value = '';
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmPassword').value = '';
@@ -1020,7 +1038,7 @@ position: fixed;
             try {
                 const shares = await apiCall('/api/my-shares');
                 const select = document.getElementById('myFileShareSelect');
-                select.innerHTML = '<option value="">Paylaşım seçin...</option>' +
+                select.innerHTML = '<option value="">Seleccionar carpeta...</option>' +
                     shares.map(s => `<option value="${s.name}" data-perm="${s.permission}">${s.name}</option>`).join('');
             } catch (error) {
                 showAlert(error.message, 'error');
@@ -1048,7 +1066,7 @@ position: fixed;
                 const data = await apiCall(`/api/files/${myCurrentShare}?path=${encodeURIComponent(path)}`);
                 
                 const parts = path.split('/').filter(p => p);
-                let breadcrumb = `<a href="#" onclick="loadMyFiles(''); return false;">🏠 Ana Dizin</a>`;
+                let breadcrumb = `<a href="#" onclick="loadMyFiles(''); return false;">🏠 Inicio</a>`;
                 let currentPath = '';
                 parts.forEach(part => {
                     currentPath += '/' + part;
@@ -1071,13 +1089,13 @@ position: fixed;
                                 </div>
                             </div>
                             <div class="file-actions">
-                                ${f.type === 'file' && f.editable && canWrite ? `<button class="btn btn-warning btn-small" onclick="editFile('${fullPath}')">✏️ Düzenle</button>` : ''}
+                                ${f.type === 'file' && f.editable && canWrite ? `<button class="btn btn-warning btn-small" onclick="editFile('${fullPath}')">✏️ Editar</button>` : ''}
                                 ${f.type === 'file' ? `<button class="btn btn-small" onclick="downloadMyFile('${fullPath}')">⬇️ İndir</button>` : ''}
                                 ${canWrite ? `<button class="btn btn-danger btn-small" onclick="deleteMyFile('${fullPath}', '${f.type}')">🗑️ Sil</button>` : ''}
                             </div>
                         </div>
                     `;
-                }).join('') || '<div class="file-item">Klasör boş</div>';
+                }).join('') || '<div class="file-item">La carpeta está vacía</div>';
             } catch (error) {
                 showAlert(error.message, 'error');
             }
@@ -1104,7 +1122,7 @@ position: fixed;
                     content 
                 });
                 
-                showAlert('Dosya kaydedildi');
+                showAlert('Archivo guardado');
                 closeModal('editFileModal');
                 loadMyFiles(myCurrentPath);
             } catch (error) {
@@ -1134,7 +1152,7 @@ position: fixed;
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.error);
                 
-                showAlert('Dosya yüklendi');
+                showAlert('Archivo subido exitosamente');
                 loadMyFiles(myCurrentPath);
                 fileInput.value = '';
             } catch (error) {
@@ -1152,7 +1170,7 @@ position: fixed;
                     path: myCurrentPath 
                 });
                 
-                showAlert('Klasör oluşturuldu');
+                showAlert('Carpeta creada');
                 closeModal('myFolderModal');
                 loadMyFiles(myCurrentPath);
                 document.getElementById('myNewFolderName').value = '';
@@ -1162,12 +1180,12 @@ position: fixed;
         }
 
         async function deleteMyFile(path, type) {
-            const typeText = type === 'directory' ? 'klasörü' : 'dosyayı';
-            if (!confirm(`Bu ${typeText} silmek istediğinizden emin misiniz?`)) return;
+            const typeText = type === 'directory' ? 'carpeta' : 'archivo';
+            if (!confirm(`¿Estás seguro de que deseas eliminar este ${typeText}?`)) return;
             
             try {
                 await apiCall(`/api/files/${myCurrentShare}/delete`, 'POST', { path });
-                showAlert('Silindi');
+                showAlert('Eliminado');
                 loadMyFiles(myCurrentPath);
             } catch (error) {
                 showAlert(error.message, 'error');
@@ -1181,12 +1199,12 @@ position: fixed;
                 tbody.innerHTML = users.map(u => `
                     <tr>
                         <td>${u.username}</td>
-                        <td>${u.is_admin ? '✅' : '❌'}</td>
-                        <td>${u.created ? new Date(u.created).toLocaleString('tr-TR') : '-'}</td>
+                        <td>${u.is_admin ? '✅ Sí' : '❌ No'}</td>
+                        <td>${u.created ? new Date(u.created).toLocaleString('es-ES') : '-'}</td>
                         <td>
                             ${u.username !== 'admin' ? `
-                                <button class="btn btn-small" onclick="openChangePasswordModal('${u.username}')">🔑 Şifre</button>
-                                <button class="btn btn-danger btn-small" onclick="deleteUser('${u.username}')">Sil</button>
+                                <button class="btn btn-small" onclick="openChangePasswordModal('${u.username}')">🔑 Contraseña</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteUser('${u.username}')">Eliminar</button>
                             ` : '-'}
                         </td>
                     </tr>
@@ -1203,12 +1221,12 @@ position: fixed;
                 const is_admin = document.getElementById('isAdmin').checked;
                 
                 if (!username || !password) {
-                    showAlert('Kullanıcı adı ve şifre gerekli', 'error');
+                    showAlert('El nombre de usuario y la contraseña son requeridos', 'error');
                     return;
                 }
                 
                 await apiCall('/api/users', 'POST', { username, password, is_admin });
-                showAlert('Kullanıcı oluşturuldu');
+                showAlert('Usuario creado exitosamente');
                 closeModal('userModal');
                 loadUsers();
                 loadStatus();
@@ -1234,12 +1252,12 @@ position: fixed;
                 const confirmPassword = document.getElementById('changePasswordConfirm').value;
                 
                 if (!newPassword || !confirmPassword) {
-                    showAlert('Tüm alanları doldurun', 'error');
+                    showAlert('Por favor completa todos los campos', 'error');
                     return;
                 }
                 
                 if (newPassword !== confirmPassword) {
-                    showAlert('Şifreler eşleşmiyor', 'error');
+                    showAlert('Las contraseñas no coinciden', 'error');
                     return;
                 }
                 
@@ -1247,7 +1265,7 @@ position: fixed;
                     new_password: newPassword 
                 });
                 
-                showAlert(`${username} kullanıcısının şifresi değiştirildi`);
+                showAlert(`Contraseña de ${username} cambiada exitosamente`);
                 closeModal('changePasswordModal');
             } catch (error) {
                 showAlert(error.message, 'error');
@@ -1255,11 +1273,11 @@ position: fixed;
         }
 
         async function deleteUser(username) {
-            if (!confirm(`${username} kullanıcısını silmek istediğinizden emin misiniz?`)) return;
+            if (!confirm(`¿Estás seguro de que deseas eliminar al usuario ${username}?`)) return;
             
             try {
                 await apiCall(`/api/users/${username}`, 'DELETE');
-                showAlert('Kullanıcı silindi');
+                showAlert('Usuario eliminado');
                 loadUsers();
                 loadStatus();
             } catch (error) {
@@ -1275,10 +1293,10 @@ position: fixed;
                     <tr>
                         <td>${s.name}</td>
                         <td>${s.path}</td>
-                        <td>${s.created ? new Date(s.created).toLocaleString('tr-TR') : '-'}</td>
+                        <td>${s.created ? new Date(s.created).toLocaleString('es-ES') : '-'}</td>
                         <td>
-                            <button class="btn btn-warning btn-small" onclick="openEditShareModal('${s.name}', '${s.path}')">✏️ Düzenle</button>
-                            <button class="btn btn-danger btn-small" onclick="deleteShare('${s.name}')">Sil</button>
+                            <button class="btn btn-warning btn-small" onclick="openEditShareModal('${s.name}', '${s.path}')">✏️ Editar</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteShare('${s.name}')">Eliminar</button>
                         </td>
                     </tr>
                 `).join('');
@@ -1315,7 +1333,7 @@ position: fixed;
                     `).join('');
                 }
             } catch (error) {
-                console.error('Dizin yüklenemedi:', error);
+                console.error('Error al cargar directorio:', error);
             }
         }
 
@@ -1345,12 +1363,12 @@ position: fixed;
                 const path = document.getElementById('newSharePath').value;
                 
                 if (!name || !path) {
-                    showAlert('Paylaşım adı ve dizin seçmelisiniz', 'error');
+                    showAlert('Debes ingresar un nombre y seleccionar un directorio', 'error');
                     return;
                 }
                 
                 await apiCall('/api/shares', 'POST', { name, path });
-                showAlert('Paylaşım oluşturuldu');
+                showAlert('Carpeta compartida creada exitosamente');
                 closeModal('shareModal');
                 loadShares();
                 loadStatus();
@@ -1374,12 +1392,12 @@ position: fixed;
                 const newName = document.getElementById('editShareNewName').value;
                 
                 if (!newName) {
-                    showAlert('Paylaşım adı boş olamaz', 'error');
+                    showAlert('El nombre de carpeta no puede estar vacío', 'error');
                     return;
                 }
                 
                 await apiCall(`/api/shares/${oldName}`, 'PUT', { new_name: newName });
-                showAlert('Paylaşım güncellendi');
+                showAlert('Carpeta compartida actualizada');
                 closeModal('editShareModal');
                 loadShares();
             } catch (error) {
@@ -1388,11 +1406,11 @@ position: fixed;
         }
 
         async function deleteShare(name) {
-            if (!confirm(`${name} paylaşımını silmek istediğinizden emin misiniz?`)) return;
+            if (!confirm(`¿Estás seguro de que deseas eliminar la carpeta compartida ${name}?`)) return;
             
             try {
                 await apiCall(`/api/shares/${name}`, 'DELETE');
-                showAlert('Paylaşım silindi');
+                showAlert('Carpeta compartida eliminada');
                 loadShares();
                 loadStatus();
             } catch (error) {
@@ -1408,12 +1426,15 @@ position: fixed;
                 ]);
                 
                 const shareSelect = document.getElementById('permShareSelect');
-                shareSelect.innerHTML = '<option value="">Paylaşım seçin...</option>' +
+                shareSelect.innerHTML = '<option value="">Seleccionar carpeta...</option>' +
                     shares.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
                 
                 const userSelect = document.getElementById('permUserSelect');
-                userSelect.innerHTML = '<option value="">Kullanıcı seçin...</option>' +
+                userSelect.innerHTML = '<option value="">Seleccionar usuario...</option>' +
                     users.map(u => `<option value="${u.username}">${u.username}</option>`).join('');
+
+                // Build permission matrix
+                await loadPermissionsMatrix(shares, users);
             } catch (error) {
                 showAlert(error.message, 'error');
             }
@@ -1421,7 +1442,11 @@ position: fixed;
 
         async function loadPermissions() {
             const share = document.getElementById('permShareSelect').value;
-            if (!share) return;
+            if (!share) {
+                document.querySelector('#permissionsTable tbody').innerHTML =
+                    '<tr><td colspan="2">Selecciona una carpeta para ver sus permisos</td></tr>';
+                return;
+            }
             
             try {
                 const permissions = await apiCall('/api/permissions');
@@ -1431,11 +1456,62 @@ position: fixed;
                 tbody.innerHTML = Object.entries(sharePerms).map(([user, perm]) => `
                     <tr>
                         <td>${user}</td>
-                        <td>${perm === 'read' ? '👁️ Okuma' : '✏️ Okuma/Yazma'}</td>
+                        <td>${perm === 'read' ? '👁️ Solo Lectura' : '✏️ Lectura/Escritura'}</td>
                     </tr>
-                `).join('') || '<tr><td colspan="2">Henüz izin tanımlanmamış</td></tr>';
+                `).join('') || '<tr><td colspan="2">No hay permisos definidos aún</td></tr>';
+
+                // Refresh matrix too
+                const [shares, users] = await Promise.all([
+                    apiCall('/api/shares'),
+                    apiCall('/api/users')
+                ]);
+                await loadPermissionsMatrix(shares, users);
             } catch (error) {
                 showAlert(error.message, 'error');
+            }
+        }
+
+        async function loadPermissionsMatrix(shares, users) {
+            try {
+                const permissions = await apiCall('/api/permissions');
+                const matrixDiv = document.getElementById('permissionsMatrix');
+
+                if (!shares.length || !users.length) {
+                    matrixDiv.innerHTML = '<p style="color:#999;">No hay datos para mostrar.</p>';
+                    return;
+                }
+
+                let html = '<table style="border-collapse:collapse; font-size:13px;">';
+                // Header row
+                html += '<thead><tr><th style="padding:8px 12px; background:#f8f9fa; border:1px solid #ddd; text-align:left;">Usuario</th>';
+                shares.forEach(s => {
+                    html += `<th style="padding:8px 12px; background:#f8f9fa; border:1px solid #ddd; text-align:center;">${s.name}</th>`;
+                });
+                html += '</tr></thead><tbody>';
+
+                // One row per user
+                users.forEach(u => {
+                    html += `<tr><td style="padding:8px 12px; border:1px solid #ddd; font-weight:500;">${u.username}${u.is_admin ? ' 👑' : ''}</td>`;
+                    shares.forEach(s => {
+                        const perm = u.is_admin ? 'write' : (permissions[s.name] || {})[u.username];
+                        let cell = '<span style="color:#999;">—</span>';
+                        if (u.is_admin) {
+                            cell = '<span style="color:#27ae60;" title="Admin tiene acceso total">✏️ Admin</span>';
+                        } else if (perm === 'write') {
+                            cell = '<span style="color:#667eea;">✏️ L/E</span>';
+                        } else if (perm === 'read') {
+                            cell = '<span style="color:#f39c12;">👁️ Lect.</span>';
+                        }
+                        html += `<td style="padding:8px 12px; border:1px solid #ddd; text-align:center;">${cell}</td>`;
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                html += '<p style="font-size:12px; color:#888; margin-top:8px;">👑 = Administrador &nbsp; ✏️ L/E = Lectura/Escritura &nbsp; 👁️ Lect. = Solo Lectura &nbsp; — = Sin acceso</p>';
+                matrixDiv.innerHTML = html;
+            } catch (error) {
+                document.getElementById('permissionsMatrix').innerHTML = '<p style="color:#c00;">Error al cargar matriz</p>';
             }
         }
 
@@ -1446,12 +1522,12 @@ position: fixed;
                 const permission = document.getElementById('permTypeSelect').value;
                 
                 if (!share || !user) {
-                    showAlert('Paylaşım ve kullanıcı seçmelisiniz', 'error');
+                    showAlert('Debes seleccionar una carpeta y un usuario', 'error');
                     return;
                 }
                 
                 await apiCall('/api/permissions', 'POST', { share, user, permission });
-                showAlert('İzin ayarlandı');
+                showAlert('Permiso aplicado exitosamente');
                 loadPermissions();
             } catch (error) {
                 showAlert(error.message, 'error');
@@ -1465,7 +1541,7 @@ position: fixed;
                 
                 logsList.innerHTML = logs.reverse().map(log => `
                     <div class="log-entry">
-                        <div class="log-time">${new Date(log.timestamp).toLocaleString('tr-TR')}</div>
+                        <div class="log-time">${new Date(log.timestamp).toLocaleString('es-ES')}</div>
                         <div><span class="log-action">${log.action}</span> - ${log.user}</div>
                         ${log.details ? `<div style="color: #666; font-size: 12px;">${log.details}</div>` : ''}
                     </div>
@@ -1476,11 +1552,11 @@ position: fixed;
         }
 
         function showAbout() {
-            alert('Samba Web Manager v{{ version }}\n\nModern web tabanlı Samba yönetim paneli\n\nGeliştirici: Monica AI Assistant\nLisans: MIT\n\nGitHub: https://github.com/yourusername/samba-web-manager');
+            alert('Samba Web Manager v{{ version }}\n\nPanel de administración Samba moderno basado en web.\n\nLicencia: MIT\n\nGitHub: https://github.com/joseramirez63/samba-web-manager');
         }
 
         function showHelp() {
-            alert('Yardım\n\n• Paylaşım oluştururken boşluk kullanmayın\n• Dosya düzenlemek için yazma izniniz olmalı\n• Admin tüm dosyalara erişebilir\n• Loglar son 100 işlemi gösterir\n\nDaha fazla bilgi için GitHub sayfasını ziyaret edin.');
+            alert('Ayuda\n\n• No uses espacios al crear carpetas compartidas.\n• Necesitas permiso de escritura para editar archivos.\n• El administrador puede acceder a todas las carpetas.\n• Los registros muestran las últimas 100 acciones.\n\nVisita GitHub para más información.');
         }
 
         async function logout() {
