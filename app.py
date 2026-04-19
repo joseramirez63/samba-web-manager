@@ -972,6 +972,73 @@ def get_logs():
     limit = int(request.args.get('limit', 100))
     return jsonify(logs[-limit:]), 200
 
+@app.route('/api/samba-activity', methods=['GET'])
+@admin_required
+def get_samba_activity():
+    """Return active Samba sessions and open files via smbstatus."""
+    result_data = {
+        'sessions': [],
+        'open_files': [],
+        'timestamp': datetime.now().isoformat()
+    }
+    try:
+        proc = subprocess.run(
+            ['/usr/bin/sudo', '/usr/bin/smbstatus'],
+            capture_output=True, text=True, timeout=5
+        )
+        output = proc.stdout
+        section = None
+        for line in output.splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith('---'):
+                continue
+            if 'Samba version' in stripped or (stripped.startswith('PID') and 'Username' in stripped):
+                section = 'sessions'
+                continue
+            if stripped.startswith('Service') and 'Machine' in stripped:
+                section = 'shares'
+                continue
+            if 'Locked files' in stripped:
+                section = 'locks'
+                continue
+            if stripped.startswith('Pid') and 'DenyMode' in stripped:
+                continue
+            parts = stripped.split()
+            if not parts or not parts[0].isdigit():
+                continue
+            if section == 'sessions':
+                result_data['sessions'].append({
+                    'pid': parts[0],
+                    'username': parts[1] if len(parts) > 1 else 'unknown',
+                    'machine': parts[3] if len(parts) > 3 else 'unknown',
+                })
+            elif section == 'locks' and len(parts) >= 7:
+                # smbstatus -L columns: Pid Uid DenyMode Access R/W Oplock SharePath Name Time
+                # Filename is everything between SharePath (index 6) and the trailing timestamp.
+                # The timestamp occupies the last 3 tokens (e.g. "Sun Apr 19 10:00:00 2026" → 5 tokens,
+                # but in practice the last 3 positional tokens vary, so we stop before the final token
+                # which is the year).  Using index 7 onward and dropping the last token is the safest
+                # heuristic; fall back to index 7 alone when only one token remains.
+                share_path = parts[6] if len(parts) > 6 else ''
+                if len(parts) > 8:
+                    filename = ' '.join(parts[7:-1])
+                elif len(parts) == 8:
+                    filename = parts[7]
+                else:
+                    filename = ''
+                result_data['open_files'].append({
+                    'pid': parts[0],
+                    'uid': parts[1],
+                    'rw': parts[4] if len(parts) > 4 else '',
+                    'share_path': share_path,
+                    'filename': filename,
+                })
+    except subprocess.TimeoutExpired:
+        logging.warning('smbstatus timed out')
+    except Exception as e:
+        logging.error('smbstatus failed: %s', e)
+    return jsonify(result_data), 200
+
 def init_admin():
     users = load_json(USERS_FILE, {})
     if 'admin' not in users:
