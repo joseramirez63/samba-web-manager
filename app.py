@@ -195,7 +195,9 @@ def update_smb_conf():
     except PermissionError:
         process = subprocess.Popen(['/usr/bin/sudo', '/usr/bin/tee', '/etc/samba/smb.conf'],
                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        process.communicate(input=conf_content.encode())
+        _, stderr = process.communicate(input=conf_content.encode())
+        if process.returncode != 0:
+            logging.error('Failed to write smb.conf via sudo tee: %s', stderr.decode())
 
 def restart_samba():
     run_command(['/usr/bin/sudo', '/usr/bin/systemctl', 'restart', 'smbd'])
@@ -726,7 +728,8 @@ def read_file(share_name):
     except UnicodeDecodeError:
         return jsonify({'error': 'File is not in text format'}), 400
     except Exception as e:
-        return jsonify({'error': f'Cannot read file: {str(e)}'}), 500
+        logging.error('Error reading file %s/%s: %s', share_name, file_path, e)
+        return jsonify({'error': 'Cannot read file'}), 500
 
 @app.route('/api/files/<share_name>/write', methods=['POST'])
 @login_required
@@ -756,13 +759,15 @@ def write_file(share_name):
         with open(full_path, 'w', encoding='utf-8') as f:
             f.write(content)
         
-        os.chmod(full_path, 0o664)
-        run_command(['/usr/bin/sudo', '/usr/bin/chown', 'nobody:nogroup', full_path])
+        safe_path = os.path.realpath(full_path)
+        os.chmod(safe_path, 0o664)
+        run_command(['/usr/bin/sudo', '/usr/bin/chown', 'nobody:nogroup', safe_path])
         
         add_log('File Written', session['username'], f'{share_name}/{file_path} saved')
         return jsonify({'message': 'File saved'}), 200
     except Exception as e:
-        return jsonify({'error': f'Cannot save file: {str(e)}'}), 500
+        logging.error('Error writing file %s/%s: %s', share_name, file_path, e)
+        return jsonify({'error': 'Cannot save file'}), 500
 
 @app.route('/api/files/<share_name>/download', methods=['GET'])
 @login_required
@@ -830,10 +835,12 @@ def upload_file(share_name):
     
     try:
         file.save(file_path)
-        os.chmod(file_path, 0o664)
-        run_command(['/usr/bin/sudo', '/usr/bin/chown', 'nobody:nogroup', file_path])
+        safe_file_path = os.path.realpath(file_path)
+        os.chmod(safe_file_path, 0o664)
+        run_command(['/usr/bin/sudo', '/usr/bin/chown', 'nobody:nogroup', safe_file_path])
     except Exception as e:
-        return jsonify({'error': f'Cannot upload file: {str(e)}'}), 500
+        logging.error('Error uploading file to %s/%s: %s', share_name, subpath, e)
+        return jsonify({'error': 'Cannot upload file'}), 500
     
     add_log('File Uploaded', session['username'], f'{share_name}/{subpath}/{filename} uploaded')
     return jsonify({'message': 'File uploaded', 'filename': filename}), 201
@@ -870,7 +877,8 @@ def delete_file(share_name):
         else:
             os.remove(full_path)
     except Exception as e:
-        return jsonify({'error': f'Cannot delete: {str(e)}'}), 500
+        logging.error('Error deleting %s/%s: %s', share_name, file_path, e)
+        return jsonify({'error': 'Cannot delete'}), 500
     
     add_log('File Deleted', session['username'], f'{share_name}/{file_path} deleted')
     return jsonify({'message': 'Deleted'}), 200
@@ -907,9 +915,11 @@ def create_folder(share_name):
     
     try:
         os.makedirs(full_path, mode=0o775)
-        run_command(['/usr/bin/sudo', '/usr/bin/chown', 'nobody:nogroup', full_path])
+        safe_folder_path = os.path.realpath(full_path)
+        run_command(['/usr/bin/sudo', '/usr/bin/chown', 'nobody:nogroup', safe_folder_path])
     except Exception as e:
-        return jsonify({'error': f'Cannot create folder: {str(e)}'}), 500
+        logging.error('Error creating folder %s/%s/%s: %s', share_name, current_path, folder_name, e)
+        return jsonify({'error': 'Cannot create folder'}), 500
     
     add_log('Folder Created', session['username'], f'{share_name}/{current_path}/{folder_name} created')
     return jsonify({'message': 'Folder created'}), 201

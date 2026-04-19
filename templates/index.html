@@ -1089,7 +1089,7 @@ position: fixed;
                                 </div>
                             </div>
                             <div class="file-actions">
-                                ${f.type === 'file' && f.editable && canWrite ? `<button class="btn btn-warning btn-small" onclick="editFile('${fullPath}')">✏️ Düzenle</button>` : ''}
+                                ${f.type === 'file' && f.editable && canWrite ? `<button class="btn btn-warning btn-small" onclick="editFile('${fullPath}')">✏️ Editar</button>` : ''}
                                 ${f.type === 'file' ? `<button class="btn btn-small" onclick="downloadMyFile('${fullPath}')">⬇️ İndir</button>` : ''}
                                 ${canWrite ? `<button class="btn btn-danger btn-small" onclick="deleteMyFile('${fullPath}', '${f.type}')">🗑️ Sil</button>` : ''}
                             </div>
@@ -1204,7 +1204,7 @@ position: fixed;
                         <td>
                             ${u.username !== 'admin' ? `
                                 <button class="btn btn-small" onclick="openChangePasswordModal('${u.username}')">🔑 Contraseña</button>
-                                <button class="btn btn-danger btn-small" onclick="deleteUser('${u.username}')">Sil</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteUser('${u.username}')">Eliminar</button>
                             ` : '-'}
                         </td>
                     </tr>
@@ -1295,8 +1295,8 @@ position: fixed;
                         <td>${s.path}</td>
                         <td>${s.created ? new Date(s.created).toLocaleString('es-ES') : '-'}</td>
                         <td>
-                            <button class="btn btn-warning btn-small" onclick="openEditShareModal('${s.name}', '${s.path}')">✏️ Düzenle</button>
-                            <button class="btn btn-danger btn-small" onclick="deleteShare('${s.name}')">Sil</button>
+                            <button class="btn btn-warning btn-small" onclick="openEditShareModal('${s.name}', '${s.path}')">✏️ Editar</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteShare('${s.name}')">Eliminar</button>
                         </td>
                     </tr>
                 `).join('');
