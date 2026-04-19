@@ -100,6 +100,33 @@ Los datos de la aplicación se almacenan en `/opt/samba-manager/data/`:
 - `permissions.json` — permisos por usuario y carpeta
 - `logs.json` — registro de actividad
 
+## ⚠️ Problemas Conocidos
+
+### Error de Windows al conectar dos usuarios distintos desde la misma PC
+
+**Síntoma:** Al crear un segundo usuario y asignarle una carpeta compartida diferente, cuando ese usuario intenta conectarse desde un equipo Windows que ya tiene una conexión activa al mismo servidor con otro usuario, aparece el siguiente error:
+
+> *"Las conexiones múltiples a un servidor o recurso compartido compatible por el mismo usuario, usando más de un nombre de usuario, no están permitidas. Desconecte todas las conexiones anteriores al servidor o recurso compartido e inténtelo de nuevo."*
+
+**Causa:** Este es un comportamiento propio de Windows (error 1219 / `ERROR_SESSION_CREDENTIAL_CONFLICT`), **no un error de Samba Web Manager**. Windows solo permite un conjunto de credenciales activas por servidor (identificado por IP o nombre de host) al mismo tiempo. Si una sesión ya está autenticada como `usuario1` y se intenta abrir otra conexión al mismo servidor como `usuario2`, Windows bloquea la solicitud.
+
+**Soluciones:**
+
+1. **Desconectar la sesión activa antes de conectar con otro usuario**
+   Abre el símbolo del sistema (`cmd`) y ejecuta:
+   ```cmd
+   net use * /delete /y
+   ```
+   Luego vuelve a conectarte con las credenciales del usuario que necesitas.
+
+2. **Cada usuario usa su propia sesión de Windows**
+   Windows gestiona las credenciales SMB por sesión de usuario local. Si dos personas distintas necesitan acceder al servidor simultáneamente desde la misma máquina física, deben iniciar sesión cada una con su propia cuenta de Windows (o usar sesiones de Escritorio Remoto independientes).
+
+3. **Un solo usuario accede a varias carpetas**
+   Si es una sola persona la que necesita acceder a múltiples carpetas compartidas, el administrador debe asignarle permisos sobre todas las carpetas necesarias a ese mismo usuario. De esta forma se usa un único juego de credenciales y Windows no detecta conflicto.
+
+---
+
 ## 📜 Licencia
 
 MIT License © 2025
