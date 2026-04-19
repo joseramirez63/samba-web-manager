@@ -26,7 +26,7 @@ apt update
 
 # Install required packages
 echo "📦 Installing required packages..."
-apt install -y python3 python3-pip python3-venv samba samba-common-bin nmbd wsdd
+apt install -y python3 python3-pip python3-venv samba samba-common-bin nmbd wsdd2
 
 # Copy project files to install directory
 echo "📁 Copying files to ${INSTALL_DIR}..."
@@ -90,9 +90,9 @@ echo "🗂️  Starting Samba (smbd + nmbd)..."
 systemctl start smbd nmbd
 systemctl enable smbd nmbd
 
-echo "🔍 Starting wsdd (Windows network discovery)..."
-systemctl start wsdd
-systemctl enable wsdd
+echo "🔍 Starting wsdd2 (Windows network discovery)..."
+systemctl start wsdd2
+systemctl enable wsdd2
 
 # Sudoers configuration
 echo "🔐 Configuring sudo permissions..."
@@ -102,7 +102,7 @@ if ! grep -q "samba-manager" /etc/sudoers; then
 # Samba Web Manager
 root ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart smbd
 root ALL=(ALL) NOPASSWD: /usr/bin/systemctl status smbd
-root ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart wsdd
+root ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart wsdd2
 root ALL=(ALL) NOPASSWD: /usr/bin/smbpasswd
 root ALL=(ALL) NOPASSWD: /usr/sbin/useradd
 root ALL=(ALL) NOPASSWD: /usr/sbin/userdel
