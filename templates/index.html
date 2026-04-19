@@ -541,6 +541,42 @@ position: fixed;
             color: #666;
             margin-top: 5px;
         }
+        .info-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #e8f4fd;
+            border: 1px solid #90caf9;
+            border-left: 4px solid #1976d2;
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            color: #0d47a1;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .info-banner-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .info-banner-text {
+            flex: 1;
+        }
+        .info-banner-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            color: #1976d2;
+            padding: 0;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+        .info-banner-close:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -615,6 +651,19 @@ position: fixed;
 
         <!-- Admin: Users Tab -->
         <div id="users-tab" class="tab-content">
+            <div class="info-banner" id="userWorkflowBanner">
+                <span class="info-banner-icon">ℹ️</span>
+                <div class="info-banner-text">
+                    <strong>Flujo de trabajo recomendado:</strong> Para configurar el acceso correctamente, sigue este orden:
+                    <ol style="margin: 6px 0 0 0; padding-left: 20px;">
+                        <li>Crea el <strong>usuario</strong> en esta sección.</li>
+                        <li>Crea la <strong>carpeta compartida</strong> en la pestaña «Carpetas».</li>
+                        <li>Asigna los <strong>permisos</strong> del usuario sobre esa carpeta en la pestaña «Permisos».</li>
+                    </ol>
+                    Hacerlo en otro orden no ha sido probado y podría fallar.
+                </div>
+                <button class="info-banner-close" onclick="document.getElementById('userWorkflowBanner').style.display='none'" title="Cerrar">&times;</button>
+            </div>
             <button class="btn" onclick="openModal('userModal')">+ Nuevo Usuario</button>
             <table id="usersTable">
                 <thead>
@@ -635,8 +684,8 @@ position: fixed;
             <table id="sharesTable">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Ruta</th>
+                        <th>Nombre del Recurso Compartido</th>
+                        <th>Ruta Interna del Recurso</th>
                         <th>Fecha de Creación</th>
                         <th>Acciones</th>
                     </tr>
@@ -747,12 +796,12 @@ position: fixed;
                 <span class="close" onclick="closeModal('shareModal')">&times;</span>
             </div>
             <div class="form-group">
-                <label>Nombre</label>
+                <label>Nombre del Recurso Compartido</label>
                 <input type="text" id="newShareName" placeholder="nombre_carpeta">
                 <div class="help-text">⚠️ Solo letras, números, guiones (-) y guiones bajos (_). Sin espacios.</div>
             </div>
             <div class="form-group">
-                <label>Seleccionar Directorio</label>
+                <label>Ruta Interna del Recurso</label>
                 <div class="directory-tree" id="directoryTree"></div>
                 <input type="text" id="newSharePath" readonly style="margin-top: 10px;" placeholder="Selecciona un directorio arriba">
             </div>
@@ -768,16 +817,16 @@ position: fixed;
                 <span class="close" onclick="closeModal('editShareModal')">&times;</span>
             </div>
             <div class="form-group">
-                <label>Nombre Actual</label>
+                <label>Nombre Actual del Recurso Compartido</label>
                 <input type="text" id="editShareOldName" disabled>
             </div>
             <div class="form-group">
-                <label>Nuevo Nombre</label>
+                <label>Nuevo Nombre del Recurso Compartido</label>
                 <input type="text" id="editShareNewName" placeholder="nombre_carpeta">
                 <div class="help-text">⚠️ Solo letras, números, guiones (-) y guiones bajos (_). Sin espacios.</div>
             </div>
             <div class="form-group">
-                <label>Ruta</label>
+                <label>Ruta Interna del Recurso</label>
                 <input type="text" id="editSharePath" disabled>
             </div>
             <button class="btn" onclick="updateShare()">Actualizar</button>
@@ -971,7 +1020,7 @@ position: fixed;
                         <div class="value">${sambaStatus}</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Descubrimiento de Red (wsdd/wsdd2)</h3>
+                        <h3>Descubrimiento de Red (wsdd2)</h3>
                         <div class="value">${wsddStatus}</div>
                     </div>
                     <div class="stat-card">
