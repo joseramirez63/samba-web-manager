@@ -184,6 +184,8 @@ def update_smb_conf():
    guest ok = no
    create mask = 0664
    directory mask = 0775
+   force user = nobody
+   force group = nogroup
    valid users = {' '.join(valid_users) if valid_users else '@nobody'}
    write list = {' '.join(write_users)}
 
@@ -934,12 +936,17 @@ def get_status():
     except Exception:
         samba_status = 'unknown'
 
-    try:
-        result = subprocess.run(['/usr/bin/systemctl', 'is-active', 'wsdd'],
-                                capture_output=True, text=True)
-        wsdd_status = result.stdout.strip()
-    except Exception:
-        wsdd_status = 'unknown'
+    wsdd_status = 'not_installed'
+    for wsdd_service in ('wsdd', 'wsdd2'):
+        try:
+            result = subprocess.run(['/usr/bin/systemctl', 'is-active', wsdd_service],
+                                    capture_output=True, text=True)
+            status_out = result.stdout.strip()
+            if status_out in ('active', 'inactive', 'failed'):
+                wsdd_status = status_out
+                break
+        except Exception:
+            pass
 
     shares = load_json(SHARES_FILE, {})
     disk_info = {}
