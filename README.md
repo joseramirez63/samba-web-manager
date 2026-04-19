@@ -10,7 +10,7 @@ Panel de administración web moderno para gestionar recursos compartidos de Samb
 - 🔑 **Control de permisos granular** — Solo Lectura o Lectura/Escritura por usuario y carpeta
 - 📊 **Matriz de permisos** — vista de todos los usuarios × todas las carpetas de un vistazo
 - 📂 **Explorador de archivos integrado** — navegar, subir, descargar, editar y eliminar archivos
-- 🔍 **Descubrimiento de red automático** (via `wsdd`) — visible en "Red" de Windows 10/11 sin configuración adicional
+- 🔍 **Descubrimiento de red automático** (via `wsdd2`) — visible en "Red" de Windows 10/11 sin configuración adicional
 - 📋 **Registro de actividad** — auditoría de todas las acciones del sistema
 - 🔄 **Cambio de contraseña forzado** en el primer inicio de sesión del admin
 - 🛡️ **Rate limiting** en el login para prevenir ataques de fuerza bruta
@@ -24,6 +24,9 @@ Panel de administración web moderno para gestionar recursos compartidos de Samb
 ## 🚀 Instalación
 
 ```bash
+# 0. Instalar git si no está disponible en el sistema
+sudo apt update && sudo apt install -y git
+
 # 1. Clonar el repositorio
 git clone https://github.com/joseramirez63/samba-web-manager.git
 cd samba-web-manager
@@ -33,7 +36,7 @@ sudo bash install.sh
 ```
 
 El script instalará automáticamente:
-- `samba`, `nmbd`, `wsdd` (descubrimiento de red para Windows 10/11)
+- `samba`, `nmbd`, `wsdd2` (descubrimiento de red para Windows 10/11)
 - Python 3 y las dependencias (`flask`, `werkzeug`, `flask-limiter`)
 - El servicio `samba-manager` en systemd
 - Una `SECRET_KEY` aleatoria en `/etc/samba-manager/config.env`
