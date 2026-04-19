@@ -484,8 +484,10 @@ def create_share():
     
     if not os.path.exists(path):
         run_command(['/usr/bin/sudo', '/usr/bin/mkdir', '-p', path])
-        run_command(['/usr/bin/sudo', '/usr/bin/chown', '-R', 'nobody:nogroup', path])
-        run_command(['/usr/bin/sudo', '/usr/bin/chmod', '-R', '775', path])
+    # Always apply ownership and mode so that existing directories also have
+    # the correct permissions for the 'force user = nobody' Samba configuration.
+    run_command(['/usr/bin/sudo', '/usr/bin/chown', '-R', 'nobody:nogroup', path])
+    run_command(['/usr/bin/sudo', '/usr/bin/chmod', '-R', '775', path])
     
     shares[share_name] = {
         'path': path,
@@ -937,7 +939,7 @@ def get_status():
         samba_status = 'unknown'
 
     wsdd_status = 'not_installed'
-    for wsdd_service in ('wsdd', 'wsdd2'):
+    for wsdd_service in ('wsdd2', 'wsdd'):
         try:
             result = subprocess.run(['/usr/bin/systemctl', 'is-active', wsdd_service],
                                     capture_output=True, text=True)
