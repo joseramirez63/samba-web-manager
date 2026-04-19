@@ -657,7 +657,7 @@ position: fixed;
                     <strong>Flujo de trabajo recomendado:</strong> Para configurar el acceso correctamente, sigue este orden:
                     <ol style="margin: 6px 0 0 0; padding-left: 20px;">
                         <li>Crea el <strong>usuario</strong> en esta sección.</li>
-                        <li>Crea la <strong>carpeta compartida</strong> en la pestaña «Carpetas».</li>
+                        <li>Crea la <strong>carpeta compartida</strong> en la pestaña «Carpetas Compartidas».</li>
                         <li>Asigna los <strong>permisos</strong> del usuario sobre esa carpeta en la pestaña «Permisos».</li>
                     </ol>
                     Hacerlo en otro orden no ha sido probado y podría fallar.
@@ -756,7 +756,6 @@ position: fixed;
         <div class="footer-content">
             <div class="footer-links">
                 <a href="https://github.com/joseramirez63/samba-web-manager" target="_blank">📦 GitHub</a>
-                <a href="#" onclick="showAbout(); return false;">ℹ️ Acerca de</a>
                 <a href="#" onclick="showHelp(); return false;">❓ Ayuda</a>
             </div>
             <div class="footer-info">
@@ -884,6 +883,37 @@ position: fixed;
             </div>
             <div class="form-group">
                 <textarea id="fileContent" spellcheck="false"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>❓ Ayuda</h2>
+                <span class="close" onclick="closeModal('helpModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <strong>Flujo de trabajo recomendado:</strong>
+                <ol style="margin: 10px 0 0 0; padding-left: 20px;">
+                    <li>Crea el <strong>usuario</strong> en la pestaña «Usuarios».</li>
+                    <li>Crea la <strong>carpeta compartida</strong> en la pestaña «Carpetas Compartidas».</li>
+                    <li>Asigna los <strong>permisos</strong> del usuario sobre esa carpeta en la pestaña «Permisos».</li>
+                </ol>
+                <br>
+                <strong>Consejos:</strong>
+                <ul style="margin: 6px 0 0 0; padding-left: 20px;">
+                    <li>No uses espacios al crear carpetas compartidas.</li>
+                    <li>Necesitas permiso de escritura para editar archivos.</li>
+                    <li>El administrador puede acceder a todas las carpetas.</li>
+                    <li>Los registros muestran las últimas 100 acciones.</li>
+                </ul>
+                <br>
+                Visita <a href="https://github.com/joseramirez63/samba-web-manager" target="_blank">GitHub</a> para más información.
+            </div>
+            <div style="margin-top:10px;">
+                <button class="btn" onclick="closeModal('helpModal')">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1609,12 +1639,8 @@ position: fixed;
             }
         }
 
-        function showAbout() {
-            alert('Samba Web Manager v{{ version }}\n\nPanel de administración Samba moderno basado en web.\n\nLicencia: MIT\n\nGitHub: https://github.com/joseramirez63/samba-web-manager');
-        }
-
         function showHelp() {
-            alert('Ayuda\n\n• No uses espacios al crear carpetas compartidas.\n• Necesitas permiso de escritura para editar archivos.\n• El administrador puede acceder a todas las carpetas.\n• Los registros muestran las últimas 100 acciones.\n\nVisita GitHub para más información.');
+            openModal('helpModal');
         }
 
         async function logout() {
