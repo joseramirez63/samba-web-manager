@@ -573,6 +573,7 @@ position: fixed;
                     <label>Nombre de Usuario</label>
                     <input type="text" id="profileUsername" disabled>
                 </div>
+                <p style="color:#666;font-size:14px;margin-bottom:16px;">Para cambiar tu contraseña, completa los campos a continuación (opcional).</p>
                 <div class="form-group">
                     <label>Contraseña Actual</label>
                     <input type="password" id="oldPassword">
@@ -876,23 +877,24 @@ position: fixed;
             
             if (isAdmin) {
                 tabsContainer.innerHTML = `
-                    <button class="tab active" onclick="switchTab('profile')">👤 Profil</button>
+                    <button class="tab" onclick="switchTab('profile')">👤 Perfil</button>
                     <button class="tab" onclick="switchTab('myfiles')">📂 Mis Archivos</button>
-                    <button class="tab" onclick="switchTab('users')">👥 Usuarios</button>
+                    <button class="tab active" onclick="switchTab('users')">👥 Usuarios</button>
                     <button class="tab" onclick="switchTab('shares')">📁 Carpetas Compartidas</button>
                     <button class="tab" onclick="switchTab('permissions')">🔐 Permisos</button>
                     <button class="tab" onclick="switchTab('logs')">📋 Loglar</button>
                 `;
+                document.getElementById('users-tab').classList.add('active');
+                loadUsers();
             } else {
                 tabsContainer.innerHTML = `
-                    <button class="tab active" onclick="switchTab('profile')">👤 Profil</button>
-                    <button class="tab" onclick="switchTab('myfiles')">📂 Mis Archivos</button>
+                    <button class="tab" onclick="switchTab('profile')">👤 Perfil</button>
+                    <button class="tab active" onclick="switchTab('myfiles')">📂 Mis Archivos</button>
                 `;
                 document.getElementById('statsGrid').style.display = 'none';
+                document.getElementById('myfiles-tab').classList.add('active');
+                loadMyFilesTab();
             }
-            
-            document.getElementById('profile-tab').classList.add('active');
-            loadProfile();
         }
 
         function switchTab(tabName) {
@@ -954,7 +956,14 @@ position: fixed;
                 const status = await apiCall('/api/status');
                 
                 let sambaStatus = status.samba === 'active' ? '✅ Activo' : '❌ Inactivo';
-                let wsddStatus = status.wsdd === 'active' ? '✅ Activo' : '❌ Inactivo';
+                let wsddStatus;
+                if (status.wsdd === 'active') {
+                    wsddStatus = '✅ Activo';
+                } else if (status.wsdd === 'not_installed') {
+                    wsddStatus = '⚠️ No instalado';
+                } else {
+                    wsddStatus = '❌ Inactivo';
+                }
                 
                 let statsHTML = `
                     <div class="stat-card">
