@@ -158,7 +158,7 @@ def update_smb_conf():
    server string = Samba Server
    server role = standalone server
    security = user
-   map to guest = Bad User
+   map to guest = never
    dns proxy = no
    min protocol = SMB2
    wins support = yes
